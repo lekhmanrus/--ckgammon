@@ -1,0 +1,9 @@
+@import "modules/colors";
+@import "modules/mixins";
+
+@import "partials/menu";
+
+.menu {
+  width: 300px;
+  height: 300px;
+}

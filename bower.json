@@ -1,0 +1,28 @@
+{
+  "name": "--ckgammon",
+  "version": "1.0.0",
+  "homepage": "http://lekhmanrus.github.io/--ckgammon/",
+  "authors": [
+    "Ruslan Lekhman"
+  ],
+  "description": "A backgammon game with simple AI.",
+  "main": "Gruntfile.js",
+  "keywords": [
+    "ai",
+    "game",
+    "backgammon",
+    "logical"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "latest",
+    "jquery": "latest"
+  }
+}

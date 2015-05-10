@@ -1,0 +1,6 @@
+menu {
+  @include border-radius(10px);
+  background-color: $menuBgColor;
+  width: 300px;
+  height: 300px;
+}
