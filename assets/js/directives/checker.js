@@ -2,12 +2,13 @@
 
 angular
 .module('--ckgammonApp.directives')
-.directive('checker', function(MainMenu) {
+.directive('checker', function() {
   return {
     restrict: 'E',
     templateUrl: 'partials/directives/checker.html',
-    link: function($scope) {
-      
+    link: function($scope, $element, $attrs) {
+      $attrs.draggable = true;
+      $element.attr('draggable', true);
     }
   };
 });

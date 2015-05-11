@@ -1,0 +1,111 @@
+board {
+  display: block;
+  width: 854px;
+  height: 854px;
+  background-color: $boardBgColor;
+  margin: 0px auto;
+  border: 15px solid $boardBorderColor;
+}
+
+board > quarter {
+  display: inline-block;
+  margin: 0px;
+}
+
+board > quarter:nth-child(1),
+board > quarter:nth-child(2) {
+  padding-bottom: 7px;
+}
+
+board > quarter:nth-child(3),
+board > quarter:nth-child(4) {
+  padding-top: 7px;
+}
+
+board > quarter:nth-child(1),
+board > quarter:nth-child(3) {
+  border-right: 7px solid $boardBorderColor;
+}
+
+board > quarter:nth-child(2),
+board > quarter:nth-child(4) {
+  border-left: 7px solid $boardBorderColor;
+}
+
+board > quarter > placement {
+  width: 70px;
+  height: 420px;
+  @extend %inline-flex;
+  @include flex-just(flex-start);
+  @include align-items(center);
+  margin: 0px;
+  padding: 0px;
+  position: relative;
+}
+
+board > quarter:nth-child(1) > placement,
+board > quarter:nth-child(2) > placement {
+  @include flex-dir(column);
+  @include flex-wrap(wrap-reverse);
+}
+
+board > quarter:nth-child(3) > placement,
+board > quarter:nth-child(4) > placement {
+  @include flex-dir(column-reverse);
+  @include flex-wrap(wrap);
+}
+
+board > quarter > placement::before {
+  content: '';
+  width: 0px;
+  height: 0px;
+  border-style: solid;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+board > quarter:nth-child(1) > placement[type="red"]::before,
+board > quarter:nth-child(2) > placement[type="red"]::before {
+  border-width: 420px 35px 0px 35px;
+  border-color: $boardRedSectionColor transparent transparent transparent;
+}
+
+board > quarter:nth-child(3) > placement[type="red"]::before,
+board > quarter:nth-child(4) > placement[type="red"]::before {
+  border-width: 0px 35px 420px 35px;
+  border-color: transparent transparent $boardRedSectionColor transparent;
+}
+
+board > quarter:nth-child(1) > placement[type="black"]::before,
+board > quarter:nth-child(2) > placement[type="black"]::before {
+  border-width: 420px 35px 0px 35px;
+  border-color: $boardBlackSectionColor transparent transparent transparent;
+}
+
+board > quarter:nth-child(3) > placement[type="black"]::before,
+board > quarter:nth-child(4) > placement[type="black"]::before {
+  border-width: 0px 35px 420px 35px;
+  border-color: transparent transparent $boardBlackSectionColor transparent;
+}
+
+board > quarter > placement > checker {
+  width: 33px;
+  height: 33px;
+  margin: 1px 0px;
+  padding: 0px;
+  display: block;
+  border: 1px solid #ddd;
+  z-index: 1;
+  @include border-radius(33px);
+  @include box-shadow(0px 0px 3px 1px #000);
+  cursor: pointer;
+}
+
+board > quarter > placement > checker[type="red"] {
+  @include radial-gradient($checkerRedColor1, $checkerRedColor2);
+}
+
+board > quarter > placement > checker[type="black"] {
+  @include radial-gradient($checkerBlackColor1, $checkerBlackColor2);
+}
