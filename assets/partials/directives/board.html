@@ -1,19 +1,12 @@
-<quarter ng-repeat="quarter in quarters track by $index">
-  <placement ng-repeat="section in quarter track by $index" type="{{ section }}">
-    <checker type="{{ section }}"></checker>
-    <checker type="red"></checker>
-    <checker type="black"></checker>
-    <checker type="red"></checker>
-    <checker type="black"></checker>
-    <checker type="red"></checker>
-    <checker type="black"></checker>
-    <checker type="red"></checker>
-    <checker type="black"></checker>
-    <checker type="red"></checker>
-    <checker type="black"></checker>
-    <checker type="red"></checker>
-    <checker type="black"></checker>
-    <checker type="red"></checker>
-    <checker type="black"></checker>
-  </placement>
-</quarter>
+<region ng-repeat="region in board track by $index"
+        ng-init="regionIdx = $index">
+  <cell ng-repeat="cell in region track by $index" color="{{ cell.color }}"
+        ng-init="cellIdx = $index" region-index="{{ regionIdx }}"
+        index="{{ cellIdx }}">
+    <!-- <span style="height: 1px;">&nbsp;</span> -->
+    <checker type="{{ checker }}"
+             ng-repeat="checker in cell.checkers track by $index"
+             region-index="{{ regionIdx }}" cell-index="{{ cellIdx }}"
+             index="{{ $index }}"></checker>
+  </cell>
+</region>

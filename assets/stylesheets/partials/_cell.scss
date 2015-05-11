@@ -1,0 +1,61 @@
+board > region > cell {
+  width: 70px;
+  height: 420px;
+  @extend %inline-flex;
+  @include flex-just(flex-start);
+  @include align-items(center);
+  margin: 0px;
+  padding: 0px;
+  position: relative;
+}
+
+board > region:nth-child(1) > cell,
+board > region:nth-child(2) > cell {
+  @include flex-dir(column);
+  @include flex-wrap(wrap-reverse);
+}
+
+board > region:nth-child(3) > cell,
+board > region:nth-child(4) > cell {
+  @include flex-dir(column-reverse);
+  @include flex-wrap(wrap);
+}
+
+board > region > cell::before {
+  content: '';
+  width: 0px;
+  height: 0px;
+  border-style: solid;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+board > region:nth-child(1) > cell[color="red"]::before,
+board > region:nth-child(2) > cell[color="red"]::before {
+  border-width: 420px 35px 0px 35px;
+  border-color: $boardRedSectionColor transparent transparent transparent;
+}
+
+board > region:nth-child(3) > cell[color="red"]::before,
+board > region:nth-child(4) > cell[color="red"]::before {
+  border-width: 0px 35px 420px 35px;
+  border-color: transparent transparent $boardRedSectionColor transparent;
+}
+
+board > region:nth-child(1) > cell[color="black"]::before,
+board > region:nth-child(2) > cell[color="black"]::before {
+  border-width: 420px 35px 0px 35px;
+  border-color: $boardBlackSectionColor transparent transparent transparent;
+}
+
+board > region:nth-child(3) > cell[color="black"]::before,
+board > region:nth-child(4) > cell[color="black"]::before {
+  border-width: 0px 35px 420px 35px;
+  border-color: transparent transparent $boardBlackSectionColor transparent;
+}
+
+board > region > cell.dragover {
+  opacity: .75;
+  @include transition(all .5s);
+}

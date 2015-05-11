@@ -2,17 +2,18 @@
 
 angular
 .module('--ckgammonApp.directives')
-.directive('board', function() {
+.directive('board', [ '$timeout', 'Board', function($timeout, Board) {
   return {
     restrict: 'E',
     templateUrl: 'partials/directives/board.html',
     link: function($scope) {
-      $scope.quarters = [
-        [ 'red', 'black', 'red', 'black', 'red', 'black' ],
-        [ 'red', 'black', 'red', 'black', 'red', 'black' ],
-        [ 'black', 'red', 'black', 'red', 'black', 'red' ],
-        [ 'black', 'red', 'black', 'red', 'black', 'red' ]
-      ];
+      $scope.board = Board.init();
+      $scope.$on('board:updated', function(e, data) {
+        $timeout(function() {
+          $scope.board = data;
+        });
+        console.log('board:updated', data);
+      });
     }
   };
-});
+}]);
