@@ -22,6 +22,7 @@
     "tests"
   ],
   "dependencies": {
+    "jquery": "latest",
     "angular": "latest"
   }
 }

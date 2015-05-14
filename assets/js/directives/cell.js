@@ -27,6 +27,7 @@ angular
       $element.bind('drop', function(e) {
         var dt = (e.dataTransfer || e.originalEvent.dataTransfer);
         dt.effectAllowed = 'move';
+        $element.removeClass('dragover');
         var data = JSON.parse(dt.getData('text/json'));
         if(data && data.type != undefined && data.regionIndex != undefined &&
            data.cellIndex != undefined && data.index != undefined &&
@@ -35,7 +36,6 @@ angular
           Board.data[+data.regionIndex][+data.cellIndex].checkers.splice(+data.index, 1);
           $scope.$emit('board:updated', Board.data);
         }
-        $element.removeClass('dragover');
       });
 
     }

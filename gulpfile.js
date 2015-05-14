@@ -9,11 +9,6 @@ plugins.bowerFiles = require('main-bower-files');
 var src  = './assets/',
     dist = './out/';
 
-var handleError = function(err) {
-  plugins.util.log(plugins.util.colors.red("Error."), err.toString());
-  this.emit('end');
-};
-
 gulp
 
 .task('bower', function(done) {
@@ -25,24 +20,36 @@ gulp
 })
 
 .task('sass', function(done) {
+  var self = this;
+  var errorHandler = function(err) {
+    plugins.util.log(plugins.util.colors.red("Error."), err.toString());
+    self.emit('end');
+  };
   gulp
   .src(src + 'stylesheets/*.scss')
-  .pipe(plugins.sass())
+  .pipe(plugins.sass().on('error', errorHandler))
   .pipe(plugins.autoprefixer())
   .pipe(plugins.minifyCss({
     keepSpecialComments: 0
   }))
   .pipe(plugins.rename({ suffix: '.min' }))
   .pipe(gulp.dest(dist + 'css'))
+  .on('error', errorHandler)
   .on('end', done);
 })
 
 .task('js', function(done) {
+  var self = this;
+  var errorHandler = function(err) {
+    plugins.util.log(plugins.util.colors.red("Error."), err.toString());
+    self.emit('end');
+  };
   gulp
   .src(src + 'js/**/*.js')
-  .pipe(plugins.uglify())
+  .pipe(plugins.uglify().on('error', errorHandler))
   .pipe(plugins.rename({ suffix: '.min' }))
   .pipe(gulp.dest(dist + 'js/'))
+  .on('error', errorHandler)
   .on('end', done);
 })
 
@@ -96,7 +103,7 @@ gulp
 
 .task('clean', function(done) {
   return plugins.del([ dist ], function(err, deletedFiles) {
-    console.log('Files deleted:', deletedFiles.join(', '));
+    plugins.util.log('Files deleted:', deletedFiles.join(', '));
     done();
   });
 })

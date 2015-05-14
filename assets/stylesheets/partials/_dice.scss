@@ -1,0 +1,86 @@
+#dice {
+  position: relative;
+  display: block;
+  margin: 10px auto 0;
+  height: 400px;
+  width: 400px;
+  transition: transform 1.5s cubic-bezier(0.23, 0.75, 0.23, 0.75);
+  transform-style: preserve-3d;
+}
+
+.side {
+  position: absolute;
+  height: 85px;
+  width: 85px;
+  padding: 7px;
+  background-color: #333;
+  font-size: 37px;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 3px;
+  text-align: center;
+  line-height: 85px;
+}
+
+#dice > .side.one  {
+  transform: rotateX(90deg) translateZ(50px);
+}
+
+#dice > .side.two {
+  transform: translateZ(50px);
+}
+
+#dice > .side.three {
+  transform: rotateY(90deg) translateZ(50px);
+}
+
+#dice > .side.four {
+  transform: rotateY(180deg) translateZ(50px);
+}
+
+#dice > .side.five {
+  transform: rotateY(-90deg) translateZ(50px);
+}
+
+#dice > .side.six {
+  transform: rotateX(-90deg) rotate(180deg) translateZ(50px);
+}
+
+#dice > .side > .dot {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  border-radius: 25px;
+  /*background: #444;
+  box-shadow: inset 5px 0px 10px #000;*/
+  background: #ddd;
+  box-shadow: inset 5px 0px 10px #fff;
+}
+
+#dice > .side > .dot.center {
+  margin: 30px 0px 0px 30px;
+}
+
+#dice > .side > .dot.dtop {
+  margin-top: 0px;
+}
+
+#dice > .side > .dot.dleft {
+  margin-left: 0px;
+}
+
+#dice > .side > .dot.dright {
+  margin-left: 60px;
+}
+
+#dice > .side > .dot.dbottom {
+  margin-top: 60px;
+}
+
+#dice > .side > .dot.center.dleft {
+  margin: 30px 0px 0px 0px;
+}
+
+#dice > .side > .dot.center.dright {
+  margin: 30px 0px 0px 60px;
+}
