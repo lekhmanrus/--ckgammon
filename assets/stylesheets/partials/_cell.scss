@@ -1,7 +1,8 @@
 board > region > cell {
   width: 70px;
   height: 420px;
-  @extend %inline-flex;
+  float: left;
+  @extend %flexbox;
   @include flex-just(flex-start);
   @include align-items(center);
   margin: 0px;
