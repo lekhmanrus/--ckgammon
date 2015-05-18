@@ -23,6 +23,8 @@
   ],
   "dependencies": {
     "jquery": "latest",
-    "angular": "latest"
+    "angular": "latest",
+    "angular-animate": "latest",
+    "angular-motion": "latest"
   }
 }

@@ -14,8 +14,43 @@
   <body ng-controller="MainController">
 
     <board></board>
-    <dice color="red" class="left"></dice>
-    <dice color="black" class="right"></dice>
+
+    <dice class="left am-fade" color="red" value="dices.red.value"
+          ng-click="roll('red')" ng-if="statusDices"></dice>
+    <dice class="right am-fade" color="black" value="dices.black.value"
+          ng-click="roll('black')" ng-if="statusDices"></dice>
+
+    <button class="btn" ng-click="showNewGameDialog()">
+      New Game
+    </button>
+
+    <div ng-if="statusDiceGroup" ng-click="rollGroup(); $event.stopPropagation()">
+      <dice class="am-fade" color="red" value="diceGroupValues[0]"
+            ng-click="rollGroup(); $event.stopPropagation()"></dice>
+      <dice class="am-fade right-bottom" color="black" value="diceGroupValues[1]"
+            ng-click="rollGroup(); $event.stopPropagation()"></dice>
+    </div>
+
+    <div class="am-fade" ng-show="statusNewGameDialog">
+      <div class="dialog">
+        <span class="close" ng-click="hideNewGameDialog()"
+              ng-if="statusNewGameDialogClose">&times;</span>
+        <header>
+          <span class="logo-16"></span>
+          New Game
+        </header>
+        <content>
+          <p>Choose your color</p>
+          <p>
+            <checker ng-repeat="color in colors track by $index" type="{{ color }}"
+                     ng-click="chooseColor(color)" class="inline margin">
+            </checker>
+          </p>
+          and roll one of the dices to determine the first player makes a move
+        </content>
+      </div>
+      <div class="dialog-overlap"></div>
+    </div>
 
     <!-- inject:js -->
     <!-- endinject -->

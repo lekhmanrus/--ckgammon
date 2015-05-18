@@ -17,13 +17,18 @@ dice.right {
   right: 0px;
 }
 
+dice.right-bottom #dice {
+  left: 235px;
+  top: 235px;
+}
+
 dice > #dice {
   position: relative;
   display: block;
   margin: 10px auto 0;
   height: 400px;
   width: 400px;
-  transition: transform 1.5s cubic-bezier(0.23, 0.75, 0.23, 0.75);
+  @include transition(transform 1.5s cubic-bezier(0.23, 0.75, 0.23, 0.75));
   transform-style: preserve-3d;
 }
 
@@ -36,7 +41,7 @@ dice > #dice > .side {
   color: #fff;
   background-color: #333;
   border: 1px solid #555;
-  border-radius: 3px;
+  @include border-radius(3px);
   text-align: center;
   line-height: 85px;
 }
@@ -87,11 +92,9 @@ dice > #dice > .side > .dot {
   position: absolute;
   width: 25px;
   height: 25px;
-  border-radius: 25px;
-  /*background: #444;
-  box-shadow: inset 5px 0px 10px #000;*/
+  @include border-radius(25px);
+  @include box-shadow(inset 5px 0px 10px #fff);
   background: #ddd;
-  box-shadow: inset 5px 0px 10px #fff;
 }
 
 dice > #dice > .side > .dot.center {

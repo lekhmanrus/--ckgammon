@@ -7,6 +7,10 @@ angular
     restrict: 'E',
     templateUrl: 'partials/directives/board.html',
     link: function($scope) {
+
+      $scope.getRegionIndex = Board.indexToRegion;
+      $scope.getCellIndex = Board.indexToCell;
+
       $scope.board = Board.init();
       $scope.$on('board:updated', function(e, data) {
         $timeout(function() {
@@ -14,6 +18,7 @@ angular
         });
         console.log('board:updated', data);
       });
+
     }
   };
 }]);

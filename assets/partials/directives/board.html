@@ -1,9 +1,8 @@
 <region ng-repeat="region in board track by $index"
-        ng-init="regionIdx = $index">
+        ng-init="regionIdx = getRegionIndex($index)">
   <cell ng-repeat="cell in region track by $index" color="{{ cell.color }}"
-        ng-init="cellIdx = $index" region-index="{{ regionIdx }}"
-        index="{{ cellIdx }}">
-    <!-- <span style="height: 1px;">&nbsp;</span> -->
+        ng-init="cellIdx = getCellIndex(regionIdx, $index)"
+        region-index="{{ regionIdx }}" index="{{ cellIdx }}">
     <checker type="{{ checker }}"
              ng-repeat="checker in cell.checkers track by $index"
              region-index="{{ regionIdx }}" cell-index="{{ cellIdx }}"

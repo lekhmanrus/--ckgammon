@@ -34,25 +34,27 @@ board > region > cell::before {
 
 board > region:nth-child(1) > cell[color="red"]::before,
 board > region:nth-child(2) > cell[color="red"]::before {
-  border-width: 420px 35px 0px 35px;
+  border-width: 400px 35px 0px 35px;
   border-color: $boardRedSectionColor transparent transparent transparent;
 }
 
 board > region:nth-child(3) > cell[color="red"]::before,
 board > region:nth-child(4) > cell[color="red"]::before {
-  border-width: 0px 35px 420px 35px;
+  padding-top: 120px;
+  border-width: 0px 35px 300px 35px;
   border-color: transparent transparent $boardRedSectionColor transparent;
 }
 
 board > region:nth-child(1) > cell[color="black"]::before,
 board > region:nth-child(2) > cell[color="black"]::before {
-  border-width: 420px 35px 0px 35px;
+  border-width: 300px 35px 0px 35px;
   border-color: $boardBlackSectionColor transparent transparent transparent;
 }
 
 board > region:nth-child(3) > cell[color="black"]::before,
 board > region:nth-child(4) > cell[color="black"]::before {
-  border-width: 0px 35px 420px 35px;
+  padding-top: 20px;
+  border-width: 0px 35px 400px 35px;
   border-color: transparent transparent $boardBlackSectionColor transparent;
 }
 

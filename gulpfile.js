@@ -55,6 +55,9 @@ gulp
 
 .task('copy', function() {
   gulp
+  .src(src + 'favicon.ico')
+  .pipe(gulp.dest(dist));
+  gulp
   .src(src + 'fonts/**/**')
   .pipe(gulp.dest(dist + 'fonts/'));
   gulp
@@ -103,7 +106,9 @@ gulp
 
 .task('clean', function(done) {
   return plugins.del([ dist ], function(err, deletedFiles) {
-    plugins.util.log('Files deleted:', deletedFiles.join(', '));
+    if(deletedFiles) {
+      plugins.util.log('Files deleted:', deletedFiles.join(', '));
+    }
     done();
   });
 })

@@ -8,5 +8,6 @@ angular
 .module('--ckgammonApp', [
   '--ckgammonApp.controllers',
   '--ckgammonApp.directives',
-  '--ckgammonApp.services'
+  '--ckgammonApp.services',
+  'ngAnimate'
 ]);
