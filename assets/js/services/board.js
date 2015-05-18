@@ -120,6 +120,9 @@ angular
     rIdx = +rIdx;
     cIdx = +cIdx;
     rIdx += Math.floor(cIdx / 6);
+    if(board.moveOwner == Type.playerTwoType) {
+      rIdx = rIdx % 4;
+    }
     cIdx = cIdx % 6;
     cIdx = board.getCellIndex(rIdx, cIdx);
     var region = board.getRegion(rIdx);
@@ -171,19 +174,13 @@ angular
     return obj[rIdx];
   };
 
-  board.canMove = function(srIdx, scIdx, erIdx, ecIdx) { // bug
-    if(board.moveOwner == Type.playerTwoType) {
-      srIdx = board.IndexFromOneToTwo(+srIdx);
-      erIdx = board.IndexFromOneToTwo(+erIdx);
-    }
+  board.canMove = function(srIdx, scIdx, erIdx, ecIdx) {
     var t = board.getCell(+erIdx, +ecIdx);
     for(var k in board.moves) {
-      var sr = board.moveOwner == Type.playerTwoType ? board.IndexFromOneToTwo(+srIdx) : +srIdx,
-          pt = board.getCell(sr, (+scIdx) + (+board.moves[k])),
-          st = board.getCell(+srIdx, (+scIdx) + (+board.moves[k]));
+      var pt = board.getCell(+srIdx, (+scIdx) + (+board.moves[k]));
       if(pt && (!pt.checkers.length ||
          pt.checkers[pt.checkers.length - 1] == board.moveOwner)) {
-        if(t == st) {
+        if(t == pt) {
           return true;
         }
       }
@@ -191,7 +188,7 @@ angular
     return false;
   };
 
-  board.existsCorrectMovesFrom = function(rIdx, cIdx) { // Invalid for player two
+  board.existsCorrectMovesFrom = function(rIdx, cIdx) {
     for(var k in board.moves) {
       var t = board.getCell(rIdx, cIdx + board.moves[k]);
       if(t && (!t.checkers.length ||
@@ -202,7 +199,7 @@ angular
     return false;
   };
 
-  board.existsCorrectMoves = function() { // Invalid for player two
+  board.existsCorrectMoves = function() {
     for(var i = 0; i < 4; i++) {
       for(var j = 0; j < 6; j++) {
         var c = board.getCell(i, j).checkers;
