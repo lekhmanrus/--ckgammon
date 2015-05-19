@@ -5,8 +5,6 @@ A backgammon game with simple AI.
 ## [Play](http://lekhmanrus.github.io/--ckgammon/)
 
 ## Build From Source
-* Install globally
-    * gulp `npm install -g gulp`
-    * bower `npm install -g bower`
+* Install globally gulp `npm install -g gulp`
 * Install npm modules `npm install`
-* Build project `gulp`
+* Build & run project `gulp`
