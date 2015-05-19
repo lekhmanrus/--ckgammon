@@ -25,7 +25,6 @@ angular
           Checker.setDragging({
             regionIndex: $attrs.regionIndex,
             cellIndex: $attrs.cellIndex,
-            index: $attrs.index,
             type: $attrs.type
           });
           $element.addClass('dragstart');

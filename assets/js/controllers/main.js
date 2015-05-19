@@ -5,6 +5,7 @@ angular
 .controller('MainController', [ '$scope', '$timeout', 'Type', 'Board', 'Dice', function($scope, $timeout, Type, Board, Dice) {
 
   var playerDice = undefined,
+      playerOpposite = undefined,
       animationTime = 1500;
 
   var initDices = function() {
@@ -19,6 +20,7 @@ angular
       }
     };
     playerDice = undefined;
+    playerOpposite = undefined;
   };
 
   initDices();
@@ -29,13 +31,24 @@ angular
   };
 
   $scope.roll = function(dice) {
-    if(!$scope.dices[dice].value && !$scope.dices[oppositeDices[dice]].rolled) {
-      playerDice = dice;
-      $scope.dices[dice].value = Dice.roll();
-      $scope.dices[dice].rolled = true;
-      $timeout(function() {
-        $scope.dices[oppositeDices[dice]].value = Dice.roll();
-      }, animationTime);
+    if(!$scope.dices[dice].value && (!$scope.dices[oppositeDices[dice]].rolled || playerOpposite)) {
+      if(!playerOpposite) {
+        playerDice = dice;
+        $scope.dices[dice].value = Dice.roll();
+        $scope.dices[dice].rolled = true;
+        $timeout(function() {
+          if($scope.usersData.two.type != 'human') {
+            $scope.dices[oppositeDices[dice]].value = Dice.roll();
+          }
+          else {
+            playerOpposite = true;
+          }
+        }, animationTime);
+      }
+      else {
+        $scope.dices[dice].value = Dice.roll();
+      }
+      playerOpposite = false;
     }
   };
 
@@ -48,10 +61,10 @@ angular
       }
       else {
         if($scope.dices[playerDice].value > $scope.dices[oppositeDices[playerDice]].value) {
-          Board.moveOwner = Type.playerOneType;
+          Board.moveOwner = Board.first = Type.playerOneType;
         }
         else {
-          Board.moveOwner = Type.playerTwoType;
+          Board.moveOwner = Board.first = Type.playerTwoType;
         }
         $timeout(function() {
           $scope.statusDices = false;
@@ -67,24 +80,57 @@ angular
     }
   });
 
+  $scope.$watch(function() { return Board.one.house.inHouse; }, function(val) {
+    $scope.statusPlayerOneHouse = val;
+  });
+
+  $scope.$watch(function() { return Board.two.house.inHouse; }, function(val) {
+    $scope.statusPlayerTwoHouse = val;
+  });
+
+  $scope.$watch(function() { return Board.win; }, function(val) {
+    if(val != undefined) {
+      if($scope.usersData.one.color == val) {
+        $scope.win = 'one';
+      }
+      else if($scope.usersData.two.color == val) {
+        $scope.win = 'two';
+      }
+      else {
+        $scope.win = val;
+      }
+      $scope.statusNewGameDialogClose = false;
+      $scope.showNewGameDialog();
+    }
+  });
+
   $scope.diceGroupValues = [ undefined, undefined ];
 
+  var lockDiceGroup = false;
+
   $scope.rollGroup = function() {
-    $scope.diceGroupValues = [ undefined, undefined ];
-    $timeout(function() {
-      $scope.diceGroupValues[0] = Dice.roll();
-      $scope.diceGroupValues[1] = Dice.roll();
-    });
-    $timeout(function() {
-      Board.isMoving = true;
-      Board.setMoves($scope.diceGroupValues);
-    }, animationTime + 500);
+    if(!lockDiceGroup) {
+      lockDiceGroup = true;
+      $scope.diceGroupValues = [ undefined, undefined ];
+      $timeout(function() {
+        $scope.diceGroupValues[0] = Dice.roll();
+        $scope.diceGroupValues[1] = Dice.roll();
+      });
+      $timeout(function() {
+        Board.isMoving = true;
+        Board.setMoves($scope.diceGroupValues);
+        lockDiceGroup = false;
+      }, animationTime + 500);
+    }
   };
 
   $scope.statusDices = true;
   $scope.statusDiceGroup = false;
   $scope.statusNewGameDialog = true;
   $scope.statusNewGameDialogClose = false;
+  $scope.statusPlayerOneHouse = false;
+  $scope.statusPlayerTwoHouse = false;
+  $scope.win = false;
 
   $scope.showNewGameDialog = function() {
     $scope.statusNewGameDialog = true;
@@ -96,15 +142,53 @@ angular
 
   $scope.colors = Type.data;
 
+  $scope.usersData = {
+    one: {
+      name: 'L',
+      color: undefined
+    },
+    two: {
+      name: 'KIRA',
+      color: undefined,
+      type: 'human'
+    }
+  };
+
   $scope.chooseColor = function(color) {
-    Type.setPlayerOneType(color);
+    $scope.usersData.one.color = color;
+    $scope.usersData.two.color = Type.getOppositeType(color);
+  };
+
+  $scope.$watch('usersData.two.type', function(val) {
+    $scope.usersData.two.type = val;
+  });
+
+  $scope.newGame = function() {
+    Type.setPlayerOneType($scope.usersData.one.color);
     Board.initCheckers();
     $scope.statusNewGameDialog = false;
     $scope.statusNewGameDialogClose = Board.existsCheckers;
     $scope.statusDices = true;
     $scope.statusDiceGroup = false;
-    Board.isMoving = undefined
+    Board.isMoving = undefined;
+    Board.moveOwner = false;
+    Board.first = undefined;
+    Board.win = undefined;
+    Board.lastMove = undefined;
+    Board.one.house.inHouse = false;
+    Board.two.house.inHouse = false;
+    $scope.statusPlayerOneHouse = false;
+    $scope.statusPlayerTwoHouse = false;
+    Board.one.thrown = [ ];
+    Board.two.thrown = [ ];
+    $scope.win = false;
     initDices();
+  };
+
+  $scope.isDisabled = function() {
+    return !($scope.usersData.one.color && $scope.usersData.two.color &&
+             $scope.usersData.one.name && $scope.usersData.two.name &&
+             $scope.usersData.two.type);
   };
 
 }]);

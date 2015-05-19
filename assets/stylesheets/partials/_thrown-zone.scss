@@ -1,0 +1,36 @@
+thrown-zone {
+  width: 35px;
+  height: 853px;
+  @extend %flexbox;
+  @include flex-just(center);
+  @include flex-dir(column);
+  margin-top: 12px;
+}
+
+thrown-zone.left {
+  float: left;
+}
+
+thrown-zone.right {
+  float: right;
+}
+
+thrown-zone.red {
+  @include radial-gradient($lightgreyColor, $thrownZoneBgRedColor);
+  border: 3px solid $thrownZoneBorderRedColor;
+}
+
+thrown-zone.black {
+  @include radial-gradient($lightgreyColor, $thrownZoneBgBlackColor);
+  border: 3px solid $thrownZoneBorderBlackColor;
+}
+
+thrown-zone.red.dragover {
+  @include radial-gradient($thrownZoneBgRedColor, $lightgreyColor);
+  border: 3px solid $thrownZoneBorderBlackColor;
+}
+
+thrown-zone.black.dragover {
+  @include radial-gradient($thrownZoneBgBlackColor, $lightgreyColor);
+  border: 3px solid $thrownZoneBorderRedColor;
+}

@@ -5,7 +5,7 @@
         region-index="{{ regionIdx }}" index="{{ cellIdx }}">
     <checker type="{{ checker }}"
              ng-repeat="checker in cell.checkers track by $index"
-             region-index="{{ regionIdx }}" cell-index="{{ cellIdx }}"
-             index="{{ $index }}"></checker>
+             region-index="{{ regionIdx }}" cell-index="{{ cellIdx }}">
+    </checker>
   </cell>
 </region>

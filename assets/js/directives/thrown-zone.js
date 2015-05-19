@@ -2,10 +2,14 @@
 
 angular
 .module('--ckgammonApp.directives')
-.directive('cell', [ 'Board', 'Checker', function(Board, Checker) {
+.directive('thrownZone', [ 'Board', 'Checker', function(Board, Checker) {
   return {
     restrict: 'E',
-    link: function($scope, $element, $attrs) {
+    scope: {
+      type: '='
+    },
+    templateUrl: 'partials/directives/thrown-zone.html',
+    link: function($scope, $element) {
 
       $element.bind('dragover', function(e) {
         e.preventDefault();
@@ -13,7 +17,8 @@ angular
       });
 
       $element.bind('dragenter', function(e) {
-        if(Checker.dragging) {
+        if(Checker.dragging && Checker.dragging.type == Board.moveOwner &&
+           $scope.type == Board.moveOwner) {
           $element.addClass('dragover');
         }
       });
@@ -27,10 +32,12 @@ angular
         if(Checker.dragging) {
           var data = Checker.dragging;
           if(data && data.type != undefined && data.regionIndex != undefined &&
-             data.cellIndex != undefined &&
-             $attrs.regionIndex != undefined && $attrs.index != undefined &&
-             Board.isMoving && Board.moveOwner && data.type == Board.moveOwner) {
-            if(Board.move(data.regionIndex, data.cellIndex, $attrs.regionIndex, $attrs.index)) {
+             data.cellIndex != undefined && $scope.type != undefined &&
+             Board.isMoving && Board.moveOwner && data.type == Board.moveOwner &&
+             $scope.type == Board.moveOwner) {
+            var thrown = Board.throwChecker(data.cellIndex);
+            if(thrown !== false) {
+              $scope.data = thrown;
               $scope.$emit('board:updated', Board.data);
             }
           }

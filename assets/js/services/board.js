@@ -10,18 +10,33 @@ angular
     data: [ ],
     existsCheckers: false,
     moveOwner: false,
+    first: undefined,
     isMoving: undefined,
+    win: undefined,
+    lastMove: undefined,
     moves: [ ],
     moveFromHead: false,
-    head: {
-      one: {
+    one: {
+      head: {
         regionIndex: 0,
         cellIndex: 0
       },
-      two: {
+      house: {
+        regionIndex: 3,
+        inHouse: false
+      },
+      thrown: [ ]
+    },
+    two: {
+      head: {
         regionIndex: 2,
         cellIndex: 0
-      }
+      },
+      house: {
+        regionIndex: 1,
+        inHouse: false
+      },
+      thrown: [ ]
     }
   };
 
@@ -140,12 +155,12 @@ angular
     }
     if(Type.playerOneType && Type.playerTwoType) {
       board.addCheckers(
-        board.getCell(board.head.one.regionIndex, board.head.one.cellIndex),
+        board.getCell(board.one.head.regionIndex, board.one.head.cellIndex),
         Type.playerOneType,
         NUM_CHECKERS
       );
       board.addCheckers(
-        board.getCell(board.head.two.regionIndex, board.head.two.cellIndex),
+        board.getCell(board.two.head.regionIndex, board.two.head.cellIndex),
         Type.playerTwoType,
         NUM_CHECKERS
       );
@@ -164,23 +179,164 @@ angular
     return board.data;
   };
 
-  board.IndexFromOneToTwo = function(rIdx) {
-    var obj = {
-      0: 2,
-      1: 3,
-      2: 0,
-      3: 1
-    };
-    return obj[rIdx];
+  board.checkInHouse = function() {
+    var num = 0,
+        who,
+        rh;
+    if(board.moveOwner == Type.playerOneType) {
+      who = 'one';
+      rh  = board.one.house.regionIndex;
+    }
+    else if(board.moveOwner == Type.playerTwoType) {
+      who = 'two';
+      rh  = board.two.house.regionIndex;
+    }
+    else {
+      return false;
+    }
+    if(!board[who].house.inHouse) {
+      for(var i = 0; i < 6; i++) {
+        var c = board.getCell(rh, i).checkers;
+        if(c.length && c[c.length - 1] == board.moveOwner) {
+          num += c.length;
+        }
+      }
+      if(num == NUM_CHECKERS) {
+        board[who].house.inHouse = true;
+      }
+    }
   };
 
-  board.canMove = function(srIdx, scIdx, erIdx, ecIdx) {
+  board.getPlayerMoveOwner = function() {
+    if(board.moveOwner == Type.playerOneType) {
+      return 'one';
+    }
+    else if(board.moveOwner == Type.playerTwoType) {
+      return 'two';
+    }
+    return false;
+  };
+
+  board.throwChecker = function(scIdx) {
+    var who, rh;
+    if(board.moveOwner == Type.playerOneType) {
+      who = 'one';
+      rh  = board.one.house.regionIndex;
+    }
+    else if(board.moveOwner == Type.playerTwoType) {
+      who = 'two';
+      rh  = board.two.house.regionIndex;
+    }
+    else {
+      return false;
+    }
+    scIdx = +scIdx;
+    var moveIdx = board.moves.indexOf(6 - scIdx);
+    if(moveIdx === -1) {
+      return false;
+    }
+    var s = board.getCell(rh, scIdx);
+    board.moves.splice(moveIdx, 1);
+    board[who].thrown.push(s.checkers.pop());
+    if(board[who].thrown.length == NUM_CHECKERS) {
+      if(board.lastMove) {
+        board.win = 'draw';
+      }
+      else {
+        if(board.first != board.moveOwner) {
+          board.win = board.moveOwner;
+        }
+      }
+    }
+    else {
+      if(board.lastMove) {
+        board.win = Type.getOppositeType(board.moveOwner);
+      }
+    }
+    if((!board.moves.length || !board.existsCorrectMovesAtHouse()) &&
+       !board.win) {
+      if(board[who].thrown.length == NUM_CHECKERS &&
+         board.first == board.moveOwner) {
+        board.lastMove = true;
+      }
+      board.moveOwner = Type.getOppositeType(board.moveOwner);
+      board.isMoving = false;
+    }
+    return board[who].thrown;
+  };
+
+  board.move = function(srIdx, scIdx, erIdx, ecIdx) {
     var t = board.getCell(+erIdx, +ecIdx);
     for(var k in board.moves) {
-      var pt = board.getCell(+srIdx, (+scIdx) + (+board.moves[k]));
-      if(pt && (!pt.checkers.length ||
-         pt.checkers[pt.checkers.length - 1] == board.moveOwner)) {
-        if(t == pt) {
+      var s = board.getCell(+srIdx, +scIdx),
+          e = board.getCell(+srIdx, (+scIdx) + (+board.moves[k]));
+      if(e && (!e.checkers.length ||
+         e.checkers[e.checkers.length - 1] == board.moveOwner)) {
+        if(board.moveOwner == Type.playerTwoType) {
+          if(srIdx == 1 && erIdx == 2) {
+            continue;
+          }
+        }
+        if(t == e) {
+          if(board.moveOwner == Type.playerOneType) {
+            if(s == board.getCell(board.one.head.regionIndex, board.one.head.cellIndex)) {
+              if(!board.moveFromHead) {
+                board.moveFromHead = true;
+              }
+              else {
+                continue;
+              }
+            }
+          }
+          else if(board.moveOwner == Type.playerTwoType) {
+            if(s == board.getCell(board.two.head.regionIndex, board.two.head.cellIndex)) {
+              if(!board.moveFromHead) {
+                board.moveFromHead = true;
+              }
+              else {
+                continue;
+              }
+            }
+          }
+          board.moves.splice(k, 1);
+          e.checkers.push(s.checkers.pop());
+          board.checkInHouse();
+          var existsMoves;
+          if((board.moveOwner == Type.playerOneType && board.one.house.inHouse) ||
+             (board.moveOwner == Type.playerTwoType && board.two.house.inHouse)) {
+            existsMoves = board.existsCorrectMovesAtHouse();
+          }
+          else {
+            existsMoves = board.existsCorrectMoves();
+          }
+          if(!board.moves.length || !existsMoves) {
+            board.moveOwner = Type.getOppositeType(board.moveOwner);
+            board.isMoving = false;
+            board.moveFromHead = false;
+          }
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+
+  board.existsCorrectMovesAtHouse = function() {
+    var rh;
+    if(board.moveOwner == Type.playerOneType) {
+      rh  = board.one.house.regionIndex;
+    }
+    else if(board.moveOwner == Type.playerTwoType) {
+      rh  = board.two.house.regionIndex;
+    }
+    else {
+      return false;
+    }
+    for(var i = 0; i < 6; i++) {
+      var c = board.getCell(rh, i).checkers;
+      if(c.length && c[c.length - 1] == board.moveOwner) {
+        if(board.existsCorrectMovesFrom(rh, i) ||
+           board.moves.indexOf(6 - i) !== -1) {
           return true;
         }
       }
@@ -190,9 +346,27 @@ angular
 
   board.existsCorrectMovesFrom = function(rIdx, cIdx) {
     for(var k in board.moves) {
-      var t = board.getCell(rIdx, cIdx + board.moves[k]);
-      if(t && (!t.checkers.length ||
-         t.checkers[t.checkers.length - 1] == board.moveOwner)) {
+      var s = board.getCell(rIdx, cIdx),
+          e = board.getCell(rIdx, cIdx + board.moves[k]);
+      if(board.moveOwner == Type.playerTwoType) {
+        if(rIdx == 1 && cIdx + board.moves[k] > 5) {
+          continue;
+        }
+      }
+      if(e && (!e.checkers.length ||
+         e.checkers[e.checkers.length - 1] == board.moveOwner)) {
+        if(board.moveOwner == Type.playerOneType) {
+          if(s == board.getCell(board.one.head.regionIndex, board.one.head.cellIndex) &&
+             board.moveFromHead) {
+            continue;
+          }
+        }
+        else if(board.moveOwner == Type.playerTwoType) {
+          if(s == board.getCell(board.two.head.regionIndex, board.two.head.cellIndex) &&
+             board.moveFromHead) {
+            continue;
+          }
+        }
         return true;
       }
     }
@@ -220,6 +394,7 @@ angular
   };
 
   board.setMoves = function(dices) {
+    board.moves = [ ];
     if(dices[0] == dices[1]) {
       for(var i = 0; i < 4; i++) {
         board.moves.push(dices[0]);
@@ -230,7 +405,15 @@ angular
       board.moves.push(dices[1]);
     }
     board.moveFromHead = false;
-    if(!board.existsCorrectMoves()) {
+    var existsMoves;
+    if((board.moveOwner == Type.playerOneType && board.one.house.inHouse) ||
+       (board.moveOwner == Type.playerTwoType && board.two.house.inHouse)) {
+      existsMoves = board.existsCorrectMovesAtHouse();
+    }
+    else {
+      existsMoves = board.existsCorrectMoves();
+    }
+    if(!existsMoves) {
       board.discardMoves();
     }
     return board.moves;

@@ -12,10 +12,9 @@ angular
         if(value) {
           var path  = Math.floor(Math.random() * DicePaths[value].length),
               rot   = DicePaths[value][path],
-              shuf  = 3,
-              shuf2 = 5;
+              shuf  = 3;
           for(var i in rot) {
-            rot[i] += Math.floor(Math.random() * shuf) * (360 + Math.floor(Math.random() * shuf2));
+            rot[i] += Math.floor(Math.random() * shuf) * 360;
           }
           var transform = [
             'rotateX(', rot.x, 'deg) ',

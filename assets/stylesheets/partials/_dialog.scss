@@ -48,5 +48,15 @@
 .dialog > content {
   display: block;
   padding-top: 9px;
+  padding-bottom: 9px;
   color: $dialogContentColor;
+}
+
+.dialog > footer {
+  text-align: center;
+  font-size: 17pt;
+  font-weight: 700;
+  color: $dialogHeaderColor;
+  padding-top: 9px;
+  border-top: 1px solid $dialogBorderColor;
 }

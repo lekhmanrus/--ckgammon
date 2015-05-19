@@ -12,11 +12,11 @@ angular
       $scope.getCellIndex = Board.indexToCell;
 
       $scope.board = Board.init();
+      
       $scope.$on('board:updated', function(e, data) {
         $timeout(function() {
           $scope.board = data;
         });
-        console.log('board:updated', data);
       });
 
     }
