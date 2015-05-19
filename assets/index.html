@@ -34,7 +34,8 @@
     <dice class="right am-fade" color="black" value="dices.black.value"
           ng-click="roll('black')" ng-if="statusDices"></dice>
 
-    <div ng-if="statusDiceGroup" ng-click="rollGroup(); $event.stopPropagation()">
+    <div class="dice-group" ng-if="statusDiceGroup"
+         ng-click="rollGroup(); $event.stopPropagation()">
       <dice class="am-fade" color="red" value="diceGroupValues[0]"
             ng-click="rollGroup(); $event.stopPropagation()"></dice>
       <dice class="am-fade right-bottom" color="black" value="diceGroupValues[1]"
@@ -80,7 +81,7 @@
                 <br />
                 <div>
                   <input type="radio" id="ai" value="ai"
-                         ng-model="usersData.two.type" />
+                         ng-model="usersData.two.type" disabled />
                   <label for="ai">Artificial Intelligence</label>
                 </div>
                 <div>

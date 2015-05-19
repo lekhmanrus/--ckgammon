@@ -125,3 +125,14 @@ dice > #dice > .side > .dot.center.dleft {
 dice > #dice > .side > .dot.center.dright {
   margin: 30px 0px 0px 60px;
 }
+
+.dice-group {
+  display: block;
+  width: 884px;
+  height: 882px;
+  position: absolute;
+  z-index: 345;
+  left: 50%;
+  top: 60px;
+  margin-left: -442px;
+}
