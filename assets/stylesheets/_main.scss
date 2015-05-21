@@ -48,7 +48,7 @@ body {
 }
 
 [ng-click] {
-  cursor: pointer;
+  cursor: pointer !important;
 }
 
 .bold {
@@ -61,6 +61,14 @@ body {
 
 .green {
   color: green;
+}
+
+.red {
+  color: $redColor;
+}
+
+.black {
+  color: $greyColor;
 }
 
 .text-left {
@@ -96,6 +104,27 @@ body {
   cursor: default;
 }
 
+.btn.btn-new-game {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  @include border-radius(0px 0px 9px);
+  margin: 0px;
+}
+
+.info-panel {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  min-width: 300px;
+  max-width: 350px;
+  background-color: $lightgreyColor;
+  padding: 5px;
+  border: 1px solid $greyColor;
+  @include border-radius(0px 0px 0px);
+  @include box-shadow(0px 0px 9px 1px #333);
+}
+
 .select-player {
   display: table-cell;
   width: 40%;
@@ -107,13 +136,13 @@ body {
   vertical-align: middle;
   font-size: 19pt;
 }
-
+/* 
 .user-panel {
   min-height: 50px;
   width: 884px;
   display: block;
   margin: 5px auto;
-}
+} */
 
 input[type="text"],
 input[type="number"] {

@@ -33,7 +33,7 @@ dice > #dice {
   transform-style: preserve-3d;
 }
 
-dice > #dice > .side {
+dice-side > .side {
   position: absolute;
   height: 85px;
   width: 85px;
@@ -47,12 +47,12 @@ dice > #dice > .side {
   line-height: 85px;
 }
 
-dice[color="red"] > #dice > .side {
+dice[color="red"] > #dice > dice-side > .side {
   background-color: $diceRedColor;
   border: 1px solid $diceRedBorderColor;
 }
 
-dice[color="black"] > #dice > .side {
+dice[color="black"] > #dice > dice-side > .side {
   background-color: $diceBlackColor;
   border: 1px solid $diceBlackBorderColor;
 }
@@ -65,31 +65,45 @@ dice.right > #dice > .side {
   right: 0px;
 }
 
-dice > #dice > .side.one  {
+dice-side.one > .side  {
   transform: rotateX(90deg) translateZ(50px);
 }
 
-dice > #dice > .side.two {
+dice-side.two > .side {
   transform: translateZ(50px);
 }
 
-dice > #dice > .side.three {
+dice-side.three > .side {
   transform: rotateY(90deg) translateZ(50px);
 }
 
-dice > #dice > .side.four {
+dice-side.four > .side {
   transform: rotateY(180deg) translateZ(50px);
 }
 
-dice > #dice > .side.five {
+dice-side.five > .side {
   transform: rotateY(-90deg) translateZ(50px);
 }
 
-dice > #dice > .side.six {
+dice-side.six > .side {
   transform: rotateX(-90deg) rotate(180deg) translateZ(50px);
 }
 
-dice > #dice > .side > .dot {
+dice-side.inline > .side {
+  position: inherit;
+}
+
+dice-side.red > .side {
+  background-color: $diceRedColor;
+  border: 1px solid $diceRedBorderColor;
+}
+
+dice-side.black > .side {
+  background-color: $diceBlackColor;
+  border: 1px solid $diceBlackBorderColor;
+}
+
+dice-side > .side > .dot {
   position: absolute;
   width: 25px;
   height: 25px;
@@ -98,31 +112,31 @@ dice > #dice > .side > .dot {
   background: #ddd;
 }
 
-dice > #dice > .side > .dot.center {
+dice-side > .side > .dot.center {
   margin: 30px 0px 0px 30px;
 }
 
-dice > #dice > .side > .dot.dtop {
+dice-side > .side > .dot.dtop {
   margin-top: 0px;
 }
 
-dice > #dice > .side > .dot.dleft {
+dice-side > .side > .dot.dleft {
   margin-left: 0px;
 }
 
-dice > #dice > .side > .dot.dright {
+dice-side > .side > .dot.dright {
   margin-left: 60px;
 }
 
-dice > #dice > .side > .dot.dbottom {
+dice-side > .side > .dot.dbottom {
   margin-top: 60px;
 }
 
-dice > #dice > .side > .dot.center.dleft {
+dice-side > .side > .dot.center.dleft {
   margin: 30px 0px 0px 0px;
 }
 
-dice > #dice > .side > .dot.center.dright {
+dice-side > .side > .dot.center.dright {
   margin: 30px 0px 0px 60px;
 }
 

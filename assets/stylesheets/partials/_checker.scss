@@ -23,3 +23,7 @@ checker.dragstart {
   opacity: .75;
   @include transition(all .5s);
 }
+
+checker[non-draggable] {
+  cursor: default;
+}

@@ -2,7 +2,7 @@
 
 angular
 .module('--ckgammonApp.directives')
-.directive('thrownZone', [ 'Board', 'Checker', function(Board, Checker) {
+.directive('thrownZone', [ 'Board', 'Checker', 'Type', function(Board, Checker, Type) {
   return {
     restrict: 'E',
     scope: {
@@ -10,6 +10,26 @@ angular
     },
     templateUrl: 'partials/directives/thrown-zone.html',
     link: function($scope, $element) {
+
+      $scope.$watch(
+        function() {
+          return [
+            Type.playerOneType,
+            Type.playerTwoType,
+            Board.one.thrown,
+            Board.two.thrown
+          ];
+        },
+        function(values) {
+          if($scope.type == values[0]) {
+            $scope.data = values[2];
+          }
+          else if($scope.type == values[1]) {
+            $scope.data = values[3];
+          }
+        },
+        true
+      );
 
       $element.bind('dragover', function(e) {
         e.preventDefault();
@@ -37,7 +57,6 @@ angular
              $scope.type == Board.moveOwner) {
             var thrown = Board.throwChecker(data.cellIndex);
             if(thrown !== false) {
-              $scope.data = thrown;
               $scope.$emit('board:updated', Board.data);
             }
           }

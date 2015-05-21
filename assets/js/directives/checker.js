@@ -12,7 +12,7 @@ angular
         function() {
           $attrs.draggable = false;
           $element.removeAttr('draggable');
-          if(Board.isMoving && Board.moveOwner && $attrs.type == Board.moveOwner) {
+          if(Board.isMoving && Board.moveOwner && $attrs.type == Board.moveOwner && !$attrs.nonDraggable) {
             $attrs.draggable = true;
             $element.attr('draggable', true);
           }

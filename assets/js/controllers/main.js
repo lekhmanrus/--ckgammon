@@ -57,6 +57,9 @@ angular
       if($scope.dices.red.value == $scope.dices.black.value) {
         $timeout(function() {
           initDices();
+          if($scope.usersData.one.type == 'ai') {
+            $scope.roll(Object.keys($scope.dices)[Math.floor(Math.random() * Object.keys($scope.dices).length)]);
+          }
         }, animationTime);
       }
       else {
@@ -76,17 +79,63 @@ angular
 
   var moveAI = function() {
     $timeout(function() {
-      var moves = Board.getAvailableMoves();
-      if(moves.length > 0) {
-        var move = AI.getNextMove(moves);
-        if(Board.move(move.from.regionIndex, move.from.cellIndex, move.to.regionIndex, move.to.cellIndex)) {
+      if($scope.usersData.two.type == 'ai' && Board.moveOwner == $scope.usersData.two.color) {
+
+        var thrown = false;
+
+        if(Board.two.house.inHouse) {
+          thrown = Board.throwAnyChecker();
+        }
+
+        if(thrown) {
           if(Board.moves.length > 0) {
             moveAI();
           }
         }
         else {
-          console.log('AI selecting move error...');
+          var moves = Board.getAvailableMoves();
+          if(moves.length > 0) {
+            var move = AI.getNextMove(moves, Board.getPlayerMoveOwner());
+            if(Board.move(move.from.regionIndex, move.from.cellIndex, move.to.regionIndex, move.to.cellIndex)) {
+              if(Board.moves.length > 0) {
+                moveAI();
+              }
+            }
+            else {
+              console.log('AI selecting move error...');
+            }
+          }
         }
+
+      }
+      else if($scope.usersData.one.type == 'ai' && Board.moveOwner == $scope.usersData.one.color) {
+
+        var thrown = false;
+
+        if(Board.one.house.inHouse) {
+          thrown = Board.throwAnyChecker();
+        }
+
+        if(thrown) {
+          if(Board.moves.length > 0) {
+            moveAI();
+          }
+        }
+        else {
+          var moves = Board.getAvailableMoves();
+          if(moves.length > 0) {
+            var move = AI.getNextMove(moves, Board.getPlayerMoveOwner());
+            if(Board.move(move.from.regionIndex, move.from.cellIndex, move.to.regionIndex, move.to.cellIndex)) {
+              if(Board.moves.length > 0) {
+                moveAI();
+              }
+            }
+            else {
+              console.log('AI selecting move error...');
+            }
+          }
+        }
+
       }
     }, 500);
   };
@@ -94,11 +143,17 @@ angular
   $scope.$watchCollection(
     function() { return [ Board.isMoving, Board.moveOwner ]; },
     function(values) {
-      console.log(values);
+      if(values[1]) {
+        $scope.mOwn = Board.getPlayerMoveOwner();
+      }
       $scope.statusDiceGroup = !values[0];
       if(!values[0] && values[1]) {
         if($scope.usersData.two.type == 'ai' &&
            values[1] == $scope.usersData.two.color) {
+          $scope.rollGroup(moveAI);
+        }
+        else if($scope.usersData.one.type == 'ai' &&
+           values[1] == $scope.usersData.one.color) {
           $scope.rollGroup(moveAI);
         }
       }
@@ -129,8 +184,6 @@ angular
     }
   });
 
-  $scope.diceGroupValues = [ undefined, undefined ];
-
   var lockDiceGroup = false;
 
   $scope.rollGroup = function(cb) {
@@ -157,6 +210,8 @@ angular
   $scope.statusPlayerOneHouse = false;
   $scope.statusPlayerTwoHouse = false;
   $scope.win = false;
+  $scope.mOwn = undefined;
+  $scope.diceGroupValues = [ undefined, undefined ];
 
   $scope.showNewGameDialog = function() {
     $scope.statusNewGameDialog = true;
@@ -171,7 +226,8 @@ angular
   $scope.usersData = {
     one: {
       name: 'L',
-      color: undefined
+      color: undefined,
+      type: 'human'
     },
     two: {
       name: 'KIRA',
@@ -208,7 +264,12 @@ angular
     Board.one.thrown = [ ];
     Board.two.thrown = [ ];
     $scope.win = false;
+    $scope.mOwn = undefined;
+    $scope.diceGroupValues = [ undefined, undefined ];
     initDices();
+    if($scope.usersData.one.type == 'ai') {
+      $scope.roll(Object.keys($scope.dices)[Math.floor(Math.random() * Object.keys($scope.dices).length)]);
+    }
   };
 
   $scope.isDisabled = function() {

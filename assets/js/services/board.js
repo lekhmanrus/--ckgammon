@@ -4,7 +4,7 @@ angular
 .module('--ckgammonApp.services')
 .factory('Board', [ 'Type', function(Type) {
 
-  var NUM_CHECKERS = 15;
+  var NUM_CHECKERS = 3;
 
   var board = {
     data: [ ],
@@ -217,6 +217,31 @@ angular
     return false;
   };
 
+  board.throwAnyChecker = function() {
+    var rh;
+    if(board.moveOwner == Type.playerOneType) {
+      rh  = board.one.house.regionIndex;
+    }
+    else if(board.moveOwner == Type.playerTwoType) {
+      rh  = board.two.house.regionIndex;
+    }
+    else {
+      return false;
+    }
+    for(var i = 0; i < 6; i++) {
+      var c = board.getCell(rh, i).checkers;
+      if(c.length && c[c.length - 1] == board.moveOwner) {
+        if(board.existsCorrectMovesFrom(rh, i) ||
+           board.moves.indexOf(6 - i) !== -1) {
+          if(board.throwChecker(i)) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  };
+
   board.throwChecker = function(scIdx) {
     var who, rh;
     if(board.moveOwner == Type.playerOneType) {
@@ -238,6 +263,17 @@ angular
     var s = board.getCell(rh, scIdx);
     board.moves.splice(moveIdx, 1);
     board[who].thrown.push(s.checkers.pop());
+
+    board.checkWin();
+    if((!board.moves.length || !board.existsCorrectMovesAtHouse()) && !board.win) {
+      board.moveOwner = Type.getOppositeType(board.moveOwner);
+      board.isMoving = false;
+    }
+    return board[who].thrown;
+  };
+
+  board.checkWin = function() {
+    var who = board.getPlayerMoveOwner();
     if(board[who].thrown.length == NUM_CHECKERS) {
       if(board.lastMove) {
         board.win = 'draw';
@@ -248,21 +284,13 @@ angular
         }
       }
     }
-    else {
-      if(board.lastMove) {
-        board.win = Type.getOppositeType(board.moveOwner);
-      }
+    else if(board.lastMove) {
+      board.win = Type.getOppositeType(board.moveOwner);
     }
-    if((!board.moves.length || !board.existsCorrectMovesAtHouse()) &&
-       !board.win) {
-      if(board[who].thrown.length == NUM_CHECKERS &&
-         board.first == board.moveOwner) {
-        board.lastMove = true;
-      }
-      board.moveOwner = Type.getOppositeType(board.moveOwner);
-      board.isMoving = false;
+    if(board[who].thrown.length == NUM_CHECKERS &&
+       board.first == board.moveOwner && !board.win) {
+      board.lastMove = true;
     }
-    return board[who].thrown;
   };
 
   board.move = function(srIdx, scIdx, erIdx, ecIdx) {
@@ -301,6 +329,7 @@ angular
           board.moves.splice(k, 1);
           e.checkers.push(s.checkers.pop());
           board.checkInHouse();
+          board.checkWin();
           var existsMoves;
           if((board.moveOwner == Type.playerOneType && board.one.house.inHouse) ||
              (board.moveOwner == Type.playerTwoType && board.two.house.inHouse)) {
@@ -309,7 +338,7 @@ angular
           else {
             existsMoves = board.existsCorrectMoves();
           }
-          if(!board.moves.length || !existsMoves) {
+          if((!board.moves.length || !existsMoves) && !board.win) {
             board.moveOwner = Type.getOppositeType(board.moveOwner);
             board.isMoving = false;
             board.moveFromHead = false;
@@ -472,7 +501,10 @@ angular
       existsMoves = board.existsCorrectMoves();
     }
     if(!existsMoves) {
-      board.discardMoves();
+      board.checkWin();
+      if(!board.win) {
+        board.discardMoves();
+      }
     }
     return board.moves;
   };
