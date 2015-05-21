@@ -114,3 +114,11 @@ body {
   display: block;
   margin: 5px auto;
 }
+
+input[type="text"],
+input[type="number"] {
+  font-size: 17pt;
+  padding: 5px;
+  border-width: 0px;
+  border-bottom: 3px dashed $blackColor;
+}

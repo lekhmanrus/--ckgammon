@@ -11,7 +11,7 @@ angular
     existsCheckers: false,
     moveOwner: false,
     first: undefined,
-    isMoving: undefined,
+    isMoving: true,
     win: undefined,
     lastMove: undefined,
     moves: [ ],
@@ -385,6 +385,64 @@ angular
       }
     }
     return false;
+  };
+
+  board.getAvailableMoves = function() {
+    var who = board.getPlayerMoveOwner(),
+        ret = [ ];
+    if(!who) {
+      return ret;
+    }
+    for(var i = 0; i < 4; i++) {
+      for(var j = 0; j < 6; j++) {
+        var c = board.getCell(i, j).checkers;
+        if(c.length && c[c.length - 1] == board.moveOwner) {
+
+          for(var k in board.moves) {
+            var s = board.getCell(i, j),
+                e = board.getCell(i, j + board.moves[k]);
+            if(board.moveOwner == Type.playerTwoType) {
+              if(i == 1 && j + board.moves[k] > 5) {
+                continue;
+              }
+            }
+            if(e && (!e.checkers.length ||
+               e.checkers[e.checkers.length - 1] == board.moveOwner)) {
+              if(board.moveOwner == Type.playerOneType) {
+                if(s == board.getCell(board.one.head.regionIndex, board.one.head.cellIndex) &&
+                   board.moveFromHead) {
+                  continue;
+                }
+              }
+              else if(board.moveOwner == Type.playerTwoType) {
+                if(s == board.getCell(board.two.head.regionIndex, board.two.head.cellIndex) &&
+                   board.moveFromHead) {
+                  continue;
+                }
+              }
+              ret.push({
+                from: {
+                  regionIndex: i,
+                  cellIndex: j,
+                  checkers: s.checkers.length
+                },
+                to: {
+                  regionIndex: i + Math.floor((j + board.moves[k]) / 6),
+                  cellIndex: (j + board.moves[k]) % 6,
+                  checkers: e.checkers.length
+                },
+                move: board.moves[k]
+              });
+              if(board.moveOwner == Type.playerTwoType) {
+                ret[ret.length - 1].to.regionIndex %= 4;
+              }
+            }
+          }
+
+        }
+      }
+    }
+    return ret;
   };
 
   board.discardMoves = function() {

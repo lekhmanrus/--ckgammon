@@ -2,7 +2,7 @@
 
 angular
 .module('--ckgammonApp.controllers')
-.controller('MainController', [ '$scope', '$timeout', 'Type', 'Board', 'Dice', function($scope, $timeout, Type, Board, Dice) {
+.controller('MainController', [ '$scope', '$timeout', 'ArtificialIntelligence', 'Type', 'Board', 'Dice', function($scope, $timeout, AI, Type, Board, Dice) {
 
   var playerDice = undefined,
       playerOpposite = undefined,
@@ -74,11 +74,36 @@ angular
     }
   });
 
-  $scope.$watch(function() { return Board.isMoving; }, function(val) {
-    if(val !== undefined) {
-      $scope.statusDiceGroup = !val;
+  var moveAI = function() {
+    $timeout(function() {
+      var moves = Board.getAvailableMoves();
+      if(moves.length > 0) {
+        var move = AI.getNextMove(moves);
+        if(Board.move(move.from.regionIndex, move.from.cellIndex, move.to.regionIndex, move.to.cellIndex)) {
+          if(Board.moves.length > 0) {
+            moveAI();
+          }
+        }
+        else {
+          console.log('AI selecting move error...');
+        }
+      }
+    }, 500);
+  };
+
+  $scope.$watchCollection(
+    function() { return [ Board.isMoving, Board.moveOwner ]; },
+    function(values) {
+      console.log(values);
+      $scope.statusDiceGroup = !values[0];
+      if(!values[0] && values[1]) {
+        if($scope.usersData.two.type == 'ai' &&
+           values[1] == $scope.usersData.two.color) {
+          $scope.rollGroup(moveAI);
+        }
+      }
     }
-  });
+  );
 
   $scope.$watch(function() { return Board.one.house.inHouse; }, function(val) {
     $scope.statusPlayerOneHouse = val;
@@ -108,7 +133,7 @@ angular
 
   var lockDiceGroup = false;
 
-  $scope.rollGroup = function() {
+  $scope.rollGroup = function(cb) {
     if(!lockDiceGroup) {
       lockDiceGroup = true;
       $scope.diceGroupValues = [ undefined, undefined ];
@@ -119,6 +144,7 @@ angular
       $timeout(function() {
         Board.isMoving = true;
         Board.setMoves($scope.diceGroupValues);
+        (cb || angular.noop)();
         lockDiceGroup = false;
       }, animationTime + 500);
     }
@@ -150,7 +176,7 @@ angular
     two: {
       name: 'KIRA',
       color: undefined,
-      type: 'human'
+      type: 'ai'
     }
   };
 
@@ -170,7 +196,7 @@ angular
     $scope.statusNewGameDialogClose = Board.existsCheckers;
     $scope.statusDices = true;
     $scope.statusDiceGroup = false;
-    Board.isMoving = undefined;
+    Board.isMoving = true;
     Board.moveOwner = false;
     Board.first = undefined;
     Board.win = undefined;
