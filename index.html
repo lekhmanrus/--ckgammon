@@ -18,11 +18,23 @@
   </head>
   <body ng-controller="MainController">
 
-    <div class="user-panel">
-      <button class="btn" ng-click="showNewGameDialog()"
-              ng-disabled="statusNewGameDialog">
+    <button class="btn btn-new-game" ng-click="showNewGameDialog()"
+            ng-disabled="statusNewGameDialog">
       New Game
     </button>
+
+    <div class="info-panel" ng-if="mOwn">
+      <div>
+        <checker class="inline margin" non-draggable
+                 type="{{ usersData[mOwn].color }}"></checker>
+        <span ng-bind="usersData[mOwn].name"
+              class="large {{ usersData[mOwn].color }} bold"></span>
+        <span>makes a move</span>
+      </div>
+      <center>
+        <dice-side value="diceGroupValues[0]" class="inline red"></dice-side>
+        <dice-side value="diceGroupValues[1]" class="inline black"></dice-side>
+      </center>
     </div>
 
     <thrown-zone ng-show="statusPlayerOneHouse"
@@ -60,7 +72,7 @@
             <div class="large green bold" ng-if="win">
               <span ng-show="win == 'draw'">Draw</span>
               <span ng-show="win != 'draw'">
-                <checker class="inline margin"
+                <checker class="inline margin" non-draggable
                          type="{{ usersData[win].color }}"></checker>
                 {{ usersData[win].name }} WIN !
               </span>
@@ -71,7 +83,21 @@
               <div><input type="text" ng-model="usersData.one.name" /></div>
               <div>
                 <checker ng-show="usersData.one.color" class="margin"
-                         type="{{ usersData.one.color }}"></checker>
+                         type="{{ usersData.one.color }}" non-draggable>
+                </checker>
+              </div>
+              <div class="text-left">
+                <br />
+                <div>
+                  <input type="radio" id="one-ai" value="ai"
+                         ng-model="usersData.one.type" />
+                  <label for="one-ai">Artificial Intelligence</label>
+                </div>
+                <div>
+                  <input type="radio" id="one-human" value="human"
+                         ng-model="usersData.one.type" />
+                  <label for="one-human">Human</label>
+                </div>
               </div>
             </div>
             <div class="vs bold">vs</div>
@@ -80,27 +106,28 @@
               <div><input type="text" ng-model="usersData.two.name" /></div>
               <div>
                 <checker ng-show="usersData.two.color" class="margin"
-                         type="{{ usersData.two.color }}"></checker>
+                         type="{{ usersData.two.color }}" non-draggable>
+                </checker>
               </div>
               <div class="text-left">
                 <br />
                 <div>
-                  <input type="radio" id="ai" value="ai"
-                         ng-model="usersData.two.type" disabled />
-                  <label for="ai">Artificial Intelligence</label>
+                  <input type="radio" id="two-ai" value="ai"
+                         ng-model="usersData.two.type" />
+                  <label for="two-ai">Artificial Intelligence</label>
                 </div>
                 <div>
-                  <input type="radio" id="human" value="human"
+                  <input type="radio" id="two-human" value="human"
                          ng-model="usersData.two.type" />
-                  <label for="human">Human</label>
+                  <label for="two-human">Human</label>
                 </div>
               </div>
             </div>
             <p>Choose your color</p>
             <p>
               <checker ng-repeat="color in colors track by $index" type="{{ color }}"
-                       ng-click="chooseColor(color)" class="inline margin">
-              </checker>
+                       ng-click="chooseColor(color)" class="inline margin"
+                       non-draggable></checker>
             </p>
             <p>... and roll one of the dices to determine the first player makes a move.</p>
             <p class="bold">Good Luck!</p>
@@ -121,8 +148,10 @@
     <script src="./js/directives/board.min.js"></script>
     <script src="./js/directives/cell.min.js"></script>
     <script src="./js/directives/checker.min.js"></script>
+    <script src="./js/directives/dice-side.min.js"></script>
     <script src="./js/directives/dice.min.js"></script>
     <script src="./js/directives/thrown-zone.min.js"></script>
+    <script src="./js/services/artificial-intelligence.min.js"></script>
     <script src="./js/services/board.min.js"></script>
     <script src="./js/services/checker.min.js"></script>
     <script src="./js/services/dice-paths.min.js"></script>
