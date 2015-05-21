@@ -13,7 +13,7 @@ angular
         [ 19, 20, 21, 22, 23, 24 ]
       ],
       checker: [
-        [  0,   7,   6,   5,   4,   3  ],
+        [  8,   7,   6,   5,   4,   3  ],
         [  0,  -1,  -2,  -3,  -4,  -5  ],
         [ -15, -15, -15, -15, -15, -15 ],
         [ -50, -50, -50, -50, -50, -50 ]
@@ -29,7 +29,7 @@ angular
       checker: [
         [ -15, -15, -15, -15, -15, -15 ],
         [ -50, -50, -50, -50, -50, -50 ],
-        [  0,   7,   6,   5,   4,   3  ],
+        [  8,   7,   6,   5,   4,   3  ],
         [  0,  -1,  -2,  -3,  -4,  -5  ]
       ]
     }
@@ -48,7 +48,7 @@ angular
       for(var i in moves) {
         var m = moves[i];
         m.rank  = rate[player].section[m.to.regionIndex][m.to.cellIndex];
-        m.rank += rate[player].checker[m.to.regionIndex][m.to.cellIndex];
+        m.rank += rate[player].checker[m.from.regionIndex][m.from.cellIndex];
         //m.rank -= m.to.checkers;
         //m.rank  = rank[m.to.regionIndex][m.to.cellIndex];
         //m.rank -= m.to.checkers * 25;
