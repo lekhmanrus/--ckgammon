@@ -4,7 +4,7 @@ angular
 .module('--ckgammonApp.services')
 .factory('Board', [ 'Type', function(Type) {
 
-  var NUM_CHECKERS = 3;
+  var NUM_CHECKERS = 15;
 
   var board = {
     data: [ ],
