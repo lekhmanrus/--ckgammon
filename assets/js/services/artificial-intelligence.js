@@ -35,13 +35,6 @@ angular
     }
   };
 
-  /*var rank = [
-    [  15,  15,  15,  15,  15,  15 ],
-    [ -15, -15, -15, -15, -15, -15 ],
-    [  25,  25,  25,  25,  25,  25 ],
-    [  25,  0,   0,   0,   0,   0 ]
-  ];*/
-
   return {
 
     getNextMove: function(moves, player) {
@@ -49,15 +42,10 @@ angular
         var m = moves[i];
         m.rank  = rate[player].section[m.to.regionIndex][m.to.cellIndex];
         m.rank += rate[player].checker[m.from.regionIndex][m.from.cellIndex];
-        //m.rank -= m.to.checkers;
-        //m.rank  = rank[m.to.regionIndex][m.to.cellIndex];
-        //m.rank -= m.to.checkers * 25;
       }
       moves.sort(function(lhs, rhs) {
         return rhs.rank - lhs.rank;
       });
-      //console.log('m', moves);
-      //console.log('gm', moves[0]);
       return moves[0];
     }
 
