@@ -46,7 +46,7 @@ gulp
   };
   gulp
   .src(src + 'js/**/*.js')
-  //.pipe(plugins.uglify().on('error', errorHandler))
+  .pipe(plugins.uglify().on('error', errorHandler))
   .pipe(plugins.rename({ suffix: '.min' }))
   .pipe(gulp.dest(dist + 'js/'))
   .on('error', errorHandler)
