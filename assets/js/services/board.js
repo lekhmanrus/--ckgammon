@@ -231,8 +231,14 @@ angular
     for(var i = 0; i < 6; i++) {
       var c = board.getCell(rh, i).checkers;
       if(c.length && c[c.length - 1] == board.moveOwner) {
-        if(board.existsCorrectMovesFrom(rh, i) ||
-           board.moves.indexOf(6 - i) !== -1) {
+        var moveIdx = -1;
+        for(var k in board.moves) {
+          if(board.moves[k] >= 6 - i) {
+            moveIdx = k;
+            break;
+          }
+        }
+        if(board.existsCorrectMovesFrom(rh, i) || moveIdx !== -1) {
           if(board.throwChecker(i)) {
             return true;
           }
@@ -256,7 +262,13 @@ angular
       return false;
     }
     scIdx = +scIdx;
-    var moveIdx = board.moves.indexOf(6 - scIdx);
+    var moveIdx = -1;
+    for(var i in board.moves) {
+      if(board.moves[i] >= 6 - scIdx) {
+        moveIdx = i;
+        break;
+      }
+    }
     if(moveIdx === -1) {
       return false;
     }
@@ -364,8 +376,14 @@ angular
     for(var i = 0; i < 6; i++) {
       var c = board.getCell(rh, i).checkers;
       if(c.length && c[c.length - 1] == board.moveOwner) {
-        if(board.existsCorrectMovesFrom(rh, i) ||
-           board.moves.indexOf(6 - i) !== -1) {
+        var moveIdx = -1;
+        for(var k in board.moves) {
+          if(board.moves[k] >= 6 - i) {
+            moveIdx = k;
+            break;
+          }
+        }
+        if(board.existsCorrectMovesFrom(rh, i) || moveIdx !== -1) {
           return true;
         }
       }
@@ -491,6 +509,9 @@ angular
       board.moves.push(dices[0]);
       board.moves.push(dices[1]);
     }
+    board.moves.sort(function(lhs, rhs) {
+      return (+lhs) - (+rhs);
+    });
     board.moveFromHead = false;
     var existsMoves;
     if((board.moveOwner == Type.playerOneType && board.one.house.inHouse) ||

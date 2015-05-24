@@ -2,9 +2,9 @@ thrown-zone {
   width: 35px;
   height: 853px;
   @extend %flexbox;
-  @include flex-just(center);
+  @include flex-just(flex-end);
   @include flex-dir(column);
-  margin-top: 12px;
+  bottom: 0px;
 }
 
 thrown-zone.left {
